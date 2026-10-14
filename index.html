@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>みりょく発見ナビ</title>
+<style>
+:root {
+  --bg: #fbfaf7; --card: #ffffff; --ink: #1f1f1f; --sub: #5a5a5a; --line: #d9d5cc;
+  --accent: #8a3b12; --accent-soft: #f6e9df; --mark: #fff3b0; --must: #b3261e;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-size: 19px; line-height: 1.75;
+}
+a { color: inherit; }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.top-in { max-width: 980px; margin: 0 auto; padding: 8px 16px 0; }
+.brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand a { text-decoration: none; font-weight: 700; font-size: 20px; }
+.brand span { color: var(--sub); font-size: 14px; }
+nav.road { display: flex; gap: 6px; overflow-x: auto; padding: 8px 0 10px; scrollbar-width: none; }
+nav.road::-webkit-scrollbar { display: none; }
+nav.road a {
+  flex: 0 0 auto; text-decoration: none; border: 1.5px solid var(--line); background: var(--card);
+  border-radius: 10px; padding: 6px 12px; font-size: 16px; line-height: 1.3; white-space: nowrap; min-height: 44px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+nav.road a small { color: var(--sub); font-size: 12px; }
+nav.road a.on { border-color: var(--accent); border-width: 3px; background: var(--accent-soft); }
+main { max-width: 980px; margin: 0 auto; padding: 16px 16px 64px; }
+h1 { font-size: 26px; margin: 8px 0 12px; line-height: 1.4; }
+h2 { font-size: 21px; margin: 28px 0 10px; padding-left: 10px; border-left: 6px solid var(--accent); line-height: 1.4; }
+.meate { border: 3px solid var(--ink); border-radius: 12px; background: var(--card); padding: 12px 16px; font-size: 22px; font-weight: 700; }
+.meate .lbl { display: inline-block; font-size: 15px; background: var(--ink); color: #fff; border-radius: 6px; padding: 0 8px; margin-right: 8px; vertical-align: 3px; }
+.meate-note { color: var(--sub); font-size: 16px; margin: 6px 4px 0; }
+ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+ol.steps li { counter-increment: s; position: relative; padding: 10px 12px 10px 52px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
+ol.steps li::before { content: counter(s); position: absolute; left: 12px; top: 10px; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; text-align: center; line-height: 28px; font-size: 16px; }
+ul.hint { list-style: none; padding: 0; margin: 0; }
+ul.hint li { padding: 8px 12px 8px 36px; position: relative; border-bottom: 1px dashed var(--line); }
+ul.hint li::before { content: "▶"; position: absolute; left: 10px; color: var(--accent); font-size: 14px; top: 11px; }
+.paper { display: flex; flex-wrap: wrap; gap: 6px; }
+.paper span { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 2px 12px; font-size: 16px; }
+.say { background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 4px 0; }
+.say div { padding: 8px 16px; border-bottom: 1px dashed var(--line); }
+.say div:last-child { border-bottom: 0; }
+.note { color: var(--sub); font-size: 16px; margin: 6px 4px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; }
+.card h3 { margin: 0 0 6px; font-size: 19px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.tiles a { display: block; text-decoration: none; background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 14px 16px; font-weight: 700; min-height: 64px; }
+.tiles a small { display: block; font-weight: 400; color: var(--sub); font-size: 15px; }
+.tiles a:active, nav.road a:active, button:active { transform: translateY(1px); }
+details.k { background: var(--card); border: 2px solid var(--line); border-radius: 12px; margin-bottom: 10px; }
+details.k summary { list-style: none; cursor: pointer; padding: 14px 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; min-height: 52px; }
+details.k summary::-webkit-details-marker { display: none; }
+details.k summary::before { content: "＋"; color: var(--accent); font-size: 22px; line-height: 1; }
+details.k[open] summary::before { content: "－"; }
+details.k[open] { border-color: var(--accent); }
+details.k .in { padding: 0 16px 12px; }
+table.t { width: 100%; border-collapse: collapse; background: var(--card); }
+table.t th, table.t td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+table.t th { width: 9em; background: var(--accent-soft); white-space: nowrap; }
+.form { font-size: 20px; }
+.blank { display: inline-block; min-width: 4em; border-bottom: 2px solid var(--ink); }
+.kata { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.kata .card { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: center; }
+.kata .no { font-weight: 700; color: var(--accent); }
+.kata .bun { font-size: 20px; font-weight: 700; }
+.kata .muku { color: var(--sub); font-size: 16px; margin-top: 4px; }
+.zu { display: flex; flex-direction: column; gap: 4px; }
+.zu div { border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 10px; font-size: 16px; display: flex; gap: 8px; }
+.zu div b { color: var(--sub); font-weight: 400; min-width: 3em; }
+.zu div.star { border-color: var(--accent); background: var(--accent-soft); font-weight: 700; }
+.src { color: var(--sub); font-size: 14px; }
+.must { color: var(--must); font-weight: 700; }
+.menu5 { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.menu5 div { background: var(--card); border: 2px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.menu5 div.must-box { border: 3px solid var(--must); }
+.menu5 b { display: block; }
+footer { max-width: 980px; margin: 0 auto; padding: 0 16px 32px; color: var(--sub); font-size: 13px; }
+@media (max-width: 640px) {
+  body { font-size: 17px; }
+  h1 { font-size: 22px; }
+  .meate { font-size: 19px; }
+  .kata .card { grid-template-columns: 1fr; }
+  table.t th { width: auto; white-space: normal; }
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand"><a href="#/">みりょく発見ナビ</a><span id="unitTitle"></span></div>
+  <nav class="road" id="road" aria-label="学習ロードマップ"></nav>
+</div></header>
+<main id="main"></main>
+<footer>この学習のための手引きです。教科書を開いて、いっしょに使いましょう。</footer>
+<script>
+const D = {"unit": {"題": "筆者の工夫をとらえて読み、それをいかして書こう", "教材": "「『鳥獣戯画』を読む」「発見、日本文化のみりょく」（教科書 155〜169ページ）", "ゴール": "自分がえらんだ日本文化のよさを伝える文章を書いて、読み合う。"}, "lessons": [{"id": "1", "番号": "①", "見出し": "見通しをもつ", "紙": ["WS01", "ロードマップ"], "めあて": "学習のゴールをたしかめ、ゴールまでの見通しをもとう。", "やること": ["155ページの絵を見て、気づいたことを、**絵のどこか**と合わせて書く。", "ペアで、気づいたことを話す。自分では気づかなかったことを書き足す。", "「『鳥獣戯画』を読む」を読む。読み上げの音声を聞きながらでもよい。", "155ページの上の文を読んで、**単元のゴール**を書き入れる。", "ロードマップを見て、WS01の３の問いに答える。", "いちばんがんばりたい時間と、そのわけを、ペアで伝え合う。"], "ヒント": ["３の問いの答えは、**ロードマップの中に書いてあります。** ロードマップをよく見ましょう。", "「読んでもらう相手」は、まだ決めなくてかまいません。"]}, {"id": "2", "番号": "②", "見出し": "絵と文章", "紙": ["WS02", "ロイロで配る絵"], "めあて": "絵と文章を照らし合わせて、筆者が絵のどこを取り上げているかをたしかめよう。", "やること": ["156〜162ページを音読する。", "WS02の三つの文（ア 156ページ／イ 158ページ11〜12行目／ウ 159ページ4行目）が、絵のどこのことかを、ロイロの絵にア・イ・ウで書きこむ。", "ペアで「この文は、絵のどこ？」と、**指でさして**たしかめ合う。", "160ページ1〜2行目を読んで、ロイロの絵に、時間が流れる向きを矢印で書く。", "157ページ13行目のとおりに、ページをめくってみる。", "158ページ7〜8行目を読んで、筆者がなぜ絵をわざと切りはなして見せたのかを考える。"], "ヒント": ["場所は「**だれの、どこ**」で書きます。「だれの」はどの動物か、「どこ」は体のどの部分かです。", "考えるときの書き出し：「切りはなしてあると、読む人は……」", "全部の文でなくてよい。先生が「ここ」と言った文から始めましょう。"]}, {"id": "3", "番号": "③", "見出し": "工夫を見つける", "紙": ["WS03", "ふせん"], "めあて": "筆者が『鳥獣戯画』をどう評価しているかを見つけ、それを伝えるための工夫を書き出そう。", "やること": ["164ページ上段を読んで、筆者が「**絵**」と「**絵巻物**」の二つについて、自分の評価を書いていることをたしかめる。", "筆者がすごいと思っていることが分かる言葉をさがして、線を引く。〈絵〉は156〜159ページ、〈絵巻物〉は161〜162ページ。", "筆者の工夫を、**三つの見方**でさがして書く。例は164ページ下段にあります。", "グループで出し合って、三つの見方のどれに当たるかを分ける。", "いちばん「なるほど」と思った工夫に◎をつける。"], "ヒント": ["三つの見方は「ことばの道具箱」にもあります。", "表現の工夫で見るところ：文の終わり方／話しかけ・問いかけ／短く言い切る文／様子を表す言葉。", "ふつうの説明文なら「〜である。」と書くところを、筆者はどう書いているでしょう。", "ふせんは**1まいに1つ**。1つ書けたら、次に進んでよい。", "どこをさがせばよいか分からないときは、さがす所を**1ページにしぼって**かまいません。"]}, {"id": "4", "番号": "④", "見出し": "工夫をえらぶ", "紙": ["WS04", "おすすめカード", "「読む人が〜」の型"], "めあて": "自分が書くときに使いたい筆者の工夫をえらび、なぜ効果的なのかを本文の言葉で説明しよう。", "やること": ["学級の工夫マップを見て、自分が書き出していなかった工夫を一つ書く。", "使いたい工夫を一つえらぶ。", "その工夫が分かる教科書の言葉を、**ページと行**といっしょに書く。", "その工夫で、読む人にどんなことがおこるかを書く。", "写真をとって提出箱へ出す。", "グループで1人1分半ずつ話す。左どなりの人が、かならずたずねる。", "話したあとで、変えたところを**赤ペン**で書く。"], "ヒント": ["えらべないときは、机の上の「**おすすめカード**」からえらんでよい。", "読み返すのは、前の時間にふせんをはった1〜2か所だけでよい。", "わけは「**読む人が、〜**」で書き始めましょう。（ことばの道具箱）", "書くのは短くてかまいません。"], "話し方": ["わたしがえらんだ工夫は、〜です。", "教科書 ○ページ ○行目の「　　」という言葉から、そう思いました。", "この工夫で、読む人が〜と思います。", "（聞く人）それは本文のどこから言えるの？"]}, {"id": "5-7", "番号": "⑤〜⑦", "見出し": "材料をそろえる", "紙": ["学習の手引き", "WS05", "WS06", "WS07"], "めあて": "自分の計画で学習を進め、いちばん伝えたいみりょくと、その材料をそろえよう。", "めあての注": "この3時間は、毎時間の「じぶんのめあて」を自分で書きます。", "やること": ["始める前に、今日どこまで進めるかをロードマップで決める。", "**Ａ 本を読む**（WS05）……日本文化の本を読み、初めて知ったことと、説明のしかたで「うまい」と思ったところを書く。", "**Ｂ 題材を決める**（WS06）……書く日本文化と、いちばん伝えたいみりょくを決める。168〜169ページの高橋さんの文章も読んで、できあがりの形を見ておく。", "**Ｃ 情報を集めて、整理する**（WS07）……カード1まいに、ことがら1つと、本の名前・ページを書く。集まったら311ページを見て、図に整理する。", "Ａ・Ｂ・Ｃの順番は自分で決める。ただし、**関門①②③は全員が通る。**"], "ヒント": ["関門と進め方のきまりは「**自由進度のきまり**」のページにあります。", "困ったら「**困ったときのメニュー**」を見ましょう。聞かなくても使ってよいものばかりです。", "第6時の終わりに、ペアで「いちばん伝えたいみりょく」を言い合います。それまでに関門②を通りましょう。", "どこに書いてあったか言えないことは、書きません。"]}, {"id": "8", "番号": "⑧", "見出し": "構成をえらぶ", "紙": ["構成メモ（型あり／自由）", "第4時の工夫カード", "第7時の情報のシート", "赤ペン"], "めあて": "いちばん伝えたいことが伝わる構成をえらび、なぜその構成にしたのかを説明しよう。", "めあての注": "この時間も「じぶんのめあて」を自分で書きます。", "やること": ["めあてと、**5つの構成の型**をたしかめる。", "今日のメニュー㋐〜㋔から、自分の進み方を決める。", "**型に迷っている人は㋐から、もう決まっている人は㋑から**始める。", "**㋒ 説明の関所**には、かならず1回行く。通ったら、次に来た1人の聞き役をしてから席にもどる。", "最後に、変えたところと、次にくわしく書くところを書く。"], "メニュー": [["㋐ たしかめ", "型をかえたら、どうかわる？"], ["㋑ えらぶ", "自分の型をえらび、構成メモをつくる"], ["㋒ 説明の関所 ★かならず", "なぜその構成にしたかを説明する"], ["㋓ くらべる", "みんなの構成メモを型べつに見る"], ["㋔ 書きかえる", "赤ペンで組みかえる／型をえらび直す"]], "ヒント": ["型が決められないときは、「**『初め』に『問い』を書き、それに答えていく**」型から始めてみましょう。", "構成メモは、文でなく**短い言葉**でかまいません。", "関所で話す言い方は「ことばの道具箱」にあります。", "15分ごろと27分ごろに、先生の「**型の選び方**」ミニ講座があります。来たい人は来てよい。", "あと10分になったら、㋔の書きかえに入りましょう。"]}, {"id": "9", "番号": "⑨", "見出し": "文章を書く", "紙": ["原こう用紙", "第4時の工夫カード", "第8時の構成メモ", "書き出しの用紙"], "めあて": "筆者の工夫を使って、えらんだ日本文化のよさが伝わる文章を書こう。", "やること": ["第4時の工夫カードと、第8時の構成メモを、机の上にならべる。", "168ページの高橋さんの文章をもう一度読んで、どんな工夫をしているかを見つける。", "第4時にえらんだ工夫を、文章の**どこで使うか**決める。", "構成メモをもとに、文章を書く。", "とちゅうで手を止めて、**書き出しだけ**をグループで読み合う。", "書き終わったら、ロイロで出す。"], "ヒント": ["書き出しに迷ったら「**書き出しの用紙**」を使ってよい。三つの形からえらべます。", "全部を一度に書かなくてよい。構成メモの**一つのらん**から書き始めましょう。", "「よさを伝えるときの言葉」は「ことばの道具箱」にあります。", "字を書くのがつらいときは、ロイロで打ってもよいか、先生に聞きましょう。"]}, {"id": "10", "番号": "⑩", "見出し": "読み合う", "紙": ["感想の型", "ロードマップ", "これまでの紙"], "めあて": "友達の文章のよいところを見つけて伝え、単元の学びをふりかえろう。", "やること": ["グループで文章を読み合う。", "よいところを「**どこが**」「**なぜ**」の二つで伝える。使っている筆者の工夫も見つける。", "169ページを見て、単元で学んだことをたしかめる。", "第4時の工夫カードと、できあがった文章をならべて、単元のふりかえりを書く。"], "ヒント": ["「よかったです」で終わりにしません。", "工夫は、教室の前にはってある三つの見方の言葉を使います。", "三つとも書けなくてよい。「どこが」と「なぜ」が書けていれば十分です。"]}], "jiyu": {"関門": [["関門①", "本から、使えそうな説明の工夫を一つ書けた", "WS05 の４が書けている。「どの本の、どこ？」に答えられる。"], ["関門②", "題材と、いちばん伝えたいみりょくが、一言で言える", "WS06 の１・２。書けていても、口で言えなければ通れません。**第6時までに。**"], ["関門③", "同じことがらを二さつでたしかめ、出典を書いた", "WS07 の４。本の名前とページが書いてある。"]], "きまり": ["順番は自分で決めます。", "始める前に、今日どこまで進めるかをロードマップで決めます。", "教室で進めても、図書館へ行ってもかまいません。", "関門の印は、先生がおします。", "どこに書いてあったか言えないことは、書きません。", "二さつの本でちがっていたら、どちらが**いつ・だれが**書いたものかを見て決めます。たしかめられないことは、書きません。"], "第8時のきまり": ["㋐〜㋔は、どの順番で進めてもよい。", "**㋒ 説明の関所は、かならず1回通る。** 2回目は行きたい人だけ。", "関所を通ったら、黒板の横の表に自分で○をつける。", "通った人は、**次に来た1人の聞き役**をしてから席にもどる。", "説明は1人1分半（すな時計）。聞く人は、かならず一つは聞き返す。"]}, "komatta": [{"こまりごと": "教科書の文が読めない・読むのがつらい", "使えるもの": ["**読み上げの音声**を聞いてよい。先生がロイロで配った音声を開きます。", "全部読まなくてよい。今日使う**ページと行**だけを読みましょう（その時間のページに書いてあります）。", "高橋さんの文章は、教室に**色分けした大きい紙**があります（第8時の㋐）。"]}, {"こまりごと": "筆者の工夫が見つからない", "使えるもの": ["三つの見方（論の展開・表現の工夫・絵の示し方）を1つだけえらんで、それだけでさがす。", "表現の工夫なら、**文の終わり方**だけを見ていく。「〜である。」で終わっていない文をさがす。", "164ページ下段に、見つけ方の例があります。"]}, {"こまりごと": "どの工夫をえらべばいいか決められない", "使えるもの": ["「**おすすめカード**」の三つからえらんでよい（第4時、机の上）。", "それでも決まらないときは、読んだとき、自分がいちばんおどろいた所をえらぶ。"]}, {"こまりごと": "どの本を読めばいいか分からない", "使えるもの": ["「**先生のおすすめ**」の本から選んでよい。", "**写真と説明が多い本**を選んでよい。それでも関門①は通れます（「写真や図の使い方」で見つければよい）。", "165ページ下段に、本の例があります。"]}, {"こまりごと": "題材が決まらない", "使えるもの": ["166〜167ページの題材の例（和食・和楽器・日本画・伝統芸能 など）から選んでよい。", "**相談テーブル**に行って、人に聞いてよい。", "同じ題材の友達の一覧（紙）を見てよい。", "「すごい」の中身を考える：**何が、どうすごいのか**を一言で言ってみる。"]}, {"こまりごと": "二さつ目の本が見つからない", "使えるもの": ["先生に言う。**組になる本**（同じことを別の本で書いたもの）を用意してあります。", "**先生の情報カード**を使ってよい。"]}, {"こまりごと": "集めた情報を図にまとめられない・選べない", "使えるもの": ["図の形は、教科書**311ページ**の見本から選んでよい。", "まん中に書くことを書き、線をのばして、にているものをまとめる。", "集めすぎて選べないときは、「**読む人がいちばんおどろくのはどれか**」で決める。"]}, {"こまりごと": "構成の型がえらべない", "使えるもの": ["「**5つの構成の型**」のページを見る。", "まず「わたしがいちばん伝えたいのは、〜です。」と言ってみる。それが**初めにくるか、終わりにくるか**で考える。", "決められないときは、「『初め』に『問い』を書き、それに答えていく」型から。", "ミニ講座「型の選び方」に行ってよい（第8時の15分ごろ・27分ごろ）。"]}, {"こまりごと": "書き出せない・何から書けばいいか分からない", "使えるもの": ["「**ことばの道具箱**」の書き出しの型を使う。", "第9時は「**書き出しの用紙**」を使ってよい。三つの形からえらべます。", "構成メモの**一つのらん**だけを見て、そこから書く。"]}, {"こまりごと": "早く終わった", "使えるもの": ["三さつ目の本を読む。別の形の図で整理し直して、二つをくらべる。（第5〜7時）", "**別の型で組み直したら**どうなるかをためして、二つをくらべる。（第8時）", "㋓で、自分とちがう型をえらんだ人を3人見つけて、そのわけを読む。（第8時）"]}], "dougu": [{"見出し": "三つの見方（筆者の工夫）", "時間": "③〜⑩", "中身": [["論の展開", "どんな順番で書いているか／なぜその例を出したか"], ["表現の工夫", "言葉の選び方／文の終わり方／読む人への呼びかけ"], ["絵の示し方", "どの絵を、どう見せているか"]], "形": "表"}, {"見出し": "根きょの言い方", "時間": "②〜④", "中身": ["教科書 ○ページ ○行目の「　　」という言葉から、そう思いました。", "（聞く人）それは本文のどこから言えるの？"], "形": "型"}, {"見出し": "わけの書き出し「読む人が〜」", "時間": "④", "中身": ["読む人が、＿＿＿と感じるから。", "読む人が、＿＿＿を思いうかべられるから。", "読む人が、＿＿＿に引きこまれるから。", "読む人が、＿＿＿がすぐに分かるから。"], "注": "どれか一つだけえらんで、後ろを書けばよい。", "形": "型"}, {"見出し": "説明の関所 ―― 説明する人（1人1分半）", "時間": "⑧", "中身": ["① わたしがえらんだのは、型＿＿です。", "② いちばん伝えたいことは、＿＿＿です。", "③ だから、＿＿＿を先に書いて、＿＿＿をくわしく書きます。", "④ ＿＿＿は、簡単に書きます。"], "注": "①②③が言えれば通れます。④は言えたら、なおよい。", "形": "型"}, {"見出し": "説明の関所 ―― 聞く人", "時間": "⑧", "中身": ["かならず聞く：「その構成で、いちばん伝えたいことが伝わる？」", "足して聞いてよい：「どこをくわしく書くの？」", "足して聞いてよい：「なぜ、その順番にしたの？」", "足して聞いてよい：「その例は、いちばん伝えたいことにつながっている？」"], "注": "相手が答えにつまったら、それでよい。「じゃあ、どう直す？」まで聞きます。", "形": "型"}, {"見出し": "型をえらんだわけ", "時間": "⑧", "中身": ["わたしがいちばん伝えたいのは＿＿＿です。だから、＿＿＿の型にしました。"], "形": "型"}, {"見出し": "よさを伝えるときの言葉（教科書 168ページ）", "時間": "⑨", "中身": ["いちばん伝えたいみりょくは、―だ。", "―は欠かせない。", "―ならではだ。", "―こそ、―だ。"], "形": "型", "引用": true}, {"見出し": "友達の文章のよいところを伝える", "時間": "⑩", "中身": ["どこが：よいと思ったところは、＿＿＿です。", "なぜ：そこがよいのは、＿＿＿だからです。", "工夫：使っている筆者の工夫は、＿＿＿です。"], "注": "「よかったです」で終わりにしません。", "形": "型"}, {"見出し": "自分の学びを言う四つの言葉", "時間": "⑧〜⑩", "中身": [["くらべる", "ならべて、ちがいを見つける"], ["つなげる", "前に学んだことと、結びつける"], ["たしかめる", "どこに書いてあったかを、見にいく"], ["書きかえる", "聞いたことをもとに、直す"]], "形": "表"}], "kata": {"出典": "光村図書『国語六 創造』167ページ", "グループ": [{"名": "話の中心を分かりやすくする工夫", "型": [{"番号": "型①", "文": "「初め」と「終わり」の両方で、伝えたいことを書く。", "図": ["★ 伝えたいこと", "理由・例", "★ もう一度、伝えたいこと"], "向く": "いちばん伝えたいことが、はっきり一つに決まっているとき。"}, {"番号": "型②", "文": "「初め」で話題を示し、「終わり」で伝えたいことをくわしく書く。", "図": ["話題（何について書くか）", "知っていること・調べたこと", "★ 伝えたいことをくわしく"], "向く": "読む人を、最後の「いちばん」まで引っぱっていきたいとき。"}]}, {"名": "読む人に理解してもらう工夫", "型": [{"番号": "型③", "文": "選んだもののよさを述べた後、それを支える理由や事例を挙げる。", "図": ["★ よさ", "理由・事例①", "理由・事例②"], "向く": "よさを支える事例を、二つ以上集められたとき。"}, {"番号": "型④", "文": "結果を示してから、それがどんな原因によるものかを説明する。", "図": ["結果（今こうなっている）", "原因（なぜそうなったか）", "★ だから、ここがよい"], "向く": "「なぜ、そうなっているのか」を調べられたとき。"}, {"番号": "型⑤", "文": "「初め」に「問い」を書き、それに答えていく。", "図": ["問い（〜を知っていますか）", "答え①・答え②", "★ 答えのまとめ＝伝えたいこと"], "向く": "決められないときは、この型から。いちばん書き進めやすい型です。"}]}], "えらび方": ["まず「わたしがいちばん伝えたいのは、〜です。」と一文で言う。（第7時のシートの６）", "それを、**初めに置くと伝わるか、終わりに置くと伝わるか**を考える。", "集めた情報のうち、どれを**くわしく**書き、どれを**簡単に**書くかを決める。", "えらんだら、関所で「その構成で、いちばん伝えたいことが伝わる？」と聞いてもらう。"]}};
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\[\[(.+?)\]\]/g, '<span class="note">$1</span>');
+
+$("#unitTitle").textContent = D.unit["題"];
+
+function road(cur) {
+  $("#road").innerHTML = D.lessons.map((l) =>
+    `<a href="#/l/${l.id}" class="${l.id === cur ? "on" : ""}">${esc(l["番号"])}<small>${esc(l["見出し"])}</small></a>`
+  ).join("");
+  const on = $("#road a.on");
+  if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
+}
+
+const list = (arr, cls) => `<ul class="${cls}">${arr.map((x) => `<li>${md(x)}</li>`).join("")}</ul>`;
+const steps = (arr) => `<ol class="steps">${arr.map((x) => `<li>${md(x)}</li>`).join("")}</ol>`;
+
+function home() {
+  road("");
+  return `
+  <h1>${esc(D.unit["題"])}</h1>
+  <p class="note">${esc(D.unit["教材"])}</p>
+  <div class="meate"><span class="lbl">ゴール</span>${esc(D.unit["ゴール"])}</div>
+  <h2>今日は何時間目？</h2>
+  <div class="tiles">${D.lessons.map((l) => `<a href="#/l/${l.id}">${esc(l["番号"])} ${esc(l["見出し"])}<small>${esc(l["めあて"]).slice(0, 26)}…</small></a>`).join("")}</div>
+  <h2>いつでも使えるページ</h2>
+  <div class="tiles">
+    <a href="#/komatta">困ったときのメニュー<small>聞かなくても使ってよいもの</small></a>
+    <a href="#/dougu">ことばの道具箱<small>書き出し・話し方の型</small></a>
+    <a href="#/kata">5つの構成の型<small>⑧⑨で使う</small></a>
+    <a href="#/kimari">自由進度のきまり<small>関門・関所・メニュー</small></a>
+  </div>`;
+}
+
+function lesson(id) {
+  const l = D.lessons.find((x) => x.id === id);
+  if (!l) return home();
+  road(id);
+  let h = `<h1>${esc(l["番号"])} ${esc(l["見出し"])}</h1>
+  <div class="meate"><span class="lbl">めあて</span>${esc(l["めあて"])}</div>
+  ${l["めあての注"] ? `<p class="meate-note">${md(l["めあての注"])}</p>` : ""}
+  <h2>使うもの</h2><div class="paper">${l["紙"].map((p) => `<span>${esc(p)}</span>`).join("")}<span>教科書</span></div>
+  <h2>やること</h2>${steps(l["やること"])}`;
+  if (l["メニュー"]) {
+    h += `<h2>今日のメニュー</h2><div class="menu5">${l["メニュー"].map(([a, b]) =>
+      `<div class="${a.includes("★") ? "must-box" : ""}"><b>${esc(a)}</b>${esc(b)}</div>`).join("")}</div>`;
+  }
+  if (l["話し方"]) {
+    h += `<h2>グループで話すとき</h2><div class="say">${l["話し方"].map((x) => `<div class="form">${md(x)}</div>`).join("")}</div>`;
+  }
+  h += `<h2>ヒント</h2>${list(l["ヒント"], "hint")}`;
+  const links = [];
+  if (["5-7", "8"].includes(id)) links.push(`<a href="#/kimari">自由進度のきまり<small>関門・関所</small></a>`);
+  if (["8", "9"].includes(id)) links.push(`<a href="#/kata">5つの構成の型</a>`);
+  links.push(`<a href="#/dougu">ことばの道具箱</a>`, `<a href="#/komatta">困ったときのメニュー</a>`);
+  h += `<h2>こちらも見る</h2><div class="tiles">${links.join("")}</div>`;
+  return h;
+}
+
+function komatta() {
+  road("");
+  return `<h1>困ったときのメニュー</h1>
+  <p>困ってからでなく、<b>初めから使ってよい</b>ものです。「使ってもいいですか」と聞かなくてかまいません。</p>
+  ${D.komatta.map((k) => `<details class="k"><summary>${esc(k["こまりごと"])}</summary><div class="in">${list(k["使えるもの"], "hint")}</div></details>`).join("")}`;
+}
+
+function dougu() {
+  road("");
+  return `<h1>ことばの道具箱</h1>
+  <p class="note">書くとき・話すときに、そのまま使ってよい言い方です。（　）の中の番号は、主に使う時間です。</p>
+  ${D.dougu.map((d) => {
+    let body;
+    if (d["形"] === "表") {
+      body = `<table class="t">${d["中身"].map(([a, b]) => `<tr><th>${esc(a)}</th><td>${esc(b)}</td></tr>`).join("")}</table>`;
+    } else {
+      const f = (x) => md(x).replace(/＿＿＿|＿＿/g, '<span class="blank"></span>');
+      body = `<div class="say">${d["中身"].map((x) => `<div class="form">${f(x)}</div>`).join("")}</div>`;
+    }
+    return `<h2>${esc(d["見出し"])} <span class="note">（${esc(d["時間"])}）</span></h2>${body}${d["注"] ? `<p class="note">※${esc(d["注"])}</p>` : ""}`;
+  }).join("")}`;
+}
+
+function kata() {
+  road("");
+  const K = D.kata;
+  const zuLbl = ["初め", "中", "終わり"];
+  return `<h1>5つの構成の型</h1>
+  <p class="note">型の文は、${esc(K["出典"])}から引用しています。図とひとことは、この手引きで足したものです。★がいちばん伝えたいことです。</p>
+  ${K["グループ"].map((g) => `<h2>${esc(g["名"])}</h2><div class="kata">${g["型"].map((k) => `
+    <div class="card">
+      <div><div class="no">${esc(k["番号"])}</div><div class="bun">${esc(k["文"])}</div><div class="muku">${esc(k["向く"])}</div></div>
+      <div class="zu">${k["図"].map((z, i) => `<div class="${z.startsWith("★") ? "star" : ""}"><b>${zuLbl[i]}</b>${esc(z)}</div>`).join("")}</div>
+    </div>`).join("")}</div>`).join("")}
+  <h2>型のえらび方</h2>${steps(K["えらび方"])}`;
+}
+
+function kimari() {
+  road("");
+  const J = D.jiyu;
+  return `<h1>自由進度のきまり</h1>
+  <h2>⑤〜⑦ 材料をそろえる ―― 3つの関門</h2>
+  <p>順番はえらべますが、<span class="must">①②③は、通らずには終われません。</span></p>
+  <div class="grid">${J["関門"].map(([a, b, c]) => `<div class="card"><h3>${esc(a)}</h3><div><b>${esc(b)}</b></div><div class="note">${md(c)}</div></div>`).join("")}</div>
+  <h2>⑤〜⑦ 進め方のきまり</h2>${list(J["きまり"], "hint")}
+  <h2>⑧ 構成をえらぶ ―― 関所のきまり</h2>${list(J["第8時のきまり"], "hint")}`;
+}
+
+function route() {
+  const h = location.hash.replace(/^#\/?/, "");
+  let html;
+  if (h.startsWith("l/")) html = lesson(h.slice(2));
+  else if (h === "komatta") html = komatta();
+  else if (h === "dougu") html = dougu();
+  else if (h === "kata") html = kata();
+  else if (h === "kimari") html = kimari();
+  else html = home();
+  $("#main").innerHTML = html;
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
