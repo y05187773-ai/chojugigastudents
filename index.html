@@ -6,234 +6,257 @@
 <meta name="robots" content="noindex, nofollow">
 <title>みりょく発見ナビ</title>
 <style>
-/* 案A「すごろく型」（設計メモ/児童用サイト_レイアウト案/）。iPad 横向きが主、縦向きでもくずれない */
+/* 案E「黒板型」（2026-11-16 決定。見本は 設計メモ/児童用サイト_レイアウト案/案E_黒板型.html）。
+   左＝木のわく（行き先・タイマー・困ったとき）／上＝10時間の道のり／下＝チョーク置き（3色の見分け）。
+   黒板の上はチョークの色。紙（ヒントのふせん・使うもの・構成メモの見本・タイマー）だけ白や黄色の地に黒い字。 */
 :root {
-  --bg: #f7f5f0; --card: #ffffff; --ink: #222; --sub: #666; --line: #ddd8cc;
-  --c1: #2f6fb5; --c1s: #e6effa;   /* 読んで見つける ①〜④ */
-  --c2: #2e8b57; --c2s: #e3f3ea;   /* 材料を集める ⑤〜⑧ */
-  --c3: #d9822b; --c3s: #fdf0e1;   /* 書いて伝える ⑨⑩ */
-  --help: #b3261e; --helps: #fde8e6; --fu: #fff4b8; --fuline: #e0b800;
-  --c: var(--c1); --cs: var(--c1s);  /* いまのページの色 */
+  --board: #2b4a3f; --dark: #1b2f28; --chalk: #f5f4ea; --dim: #a9c0b5; --line: rgba(245,244,234,.3); --line2: rgba(245,244,234,.55);
+  --c1: #a8d8ff; --c1s: rgba(168,216,255,.16);   /* 読んで見つける ①〜④（水色のチョーク） */
+  --c2: #c6e89a; --c2s: rgba(198,232,154,.16);   /* 材料を集める ⑤〜⑧（黄緑のチョーク） */
+  --c3: #ffc48a; --c3s: rgba(255,196,138,.16);   /* 書いて伝える ⑨⑩（うすいだいだいのチョーク） */
+  --yel: #ffe57a; --help: #b3261e; --helpc: #ffa79f; --helps: rgba(255,167,159,.16); --paper: #fff2a8;
+  --c: var(--c1); --cs: var(--c1s);   /* いまのページの色 */
+  --rail: 92px; --hd: 58px; --tray: 28px;
+  --kyo: "Klee", "クレー", "Klee One", "BIZ UDPGothic", "Hiragino Sans", sans-serif;
+  --hand: 14px 5px 12px 6px / 6px 12px 5px 14px;   /* チョークでかいたような、少しゆがんだ角 */
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { -webkit-text-size-adjust: 100%; touch-action: manipulation; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink);
+  margin: 0; color: var(--chalk);
+  background: radial-gradient(ellipse at 22% 28%, rgba(255,255,255,.07), transparent 46%), radial-gradient(ellipse at 78% 74%, rgba(255,255,255,.05), transparent 52%), var(--board);
+  background-attachment: fixed;
   font-family: "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   font-size: 19px; line-height: 1.7;
 }
 a { color: inherit; text-decoration: none; }
-b { font-weight: 700; }
-
-/* ---------- 上：すごろくの帯 ---------- */
-header.top { position: sticky; top: 0; z-index: 5; background: #fff; border-bottom: 1px solid var(--line); }
-.top-in { max-width: 1140px; margin: 0 auto; padding: 6px 16px 4px; display: flex; align-items: center; gap: 4px 18px; flex-wrap: wrap; }
-.brand { display: flex; flex-direction: column; line-height: 1.35; }
-.brand a { font-weight: 700; font-size: 18px; }
-.legend { display: flex; flex-direction: column; font-size: 12px; color: var(--sub); }
-.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: 0; }
-nav.board { display: flex; flex: 1 1 auto; justify-content: center; overflow-x: auto; padding: 18px 0 2px; scrollbar-width: none; }
-nav.board::-webkit-scrollbar { display: none; }
-.sq { flex: 0 0 auto; width: 84px; display: flex; flex-direction: column; align-items: center; position: relative; }
-.sq::before { content: ""; position: absolute; top: 19px; left: -42px; width: 84px; height: 5px; background: #d6d2c8; }
-.sq:first-child::before { display: none; }
-.sq .n { width: 42px; height: 42px; border-radius: 50%; color: #fff; font-weight: 700; font-size: 18px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; background: var(--pc); }
-.sq .w { font-size: 12px; line-height: 1.3; text-align: center; margin-top: 3px; color: var(--sub); }
-.sq.done .n { opacity: .45; }
-.sq.now .n { width: 50px; height: 50px; margin-top: -4px; font-size: 21px; box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--pc); }
-.sq.now .w { color: var(--ink); font-weight: 700; margin-top: 6px; }
-.sq.now .flag { position: absolute; top: -20px; z-index: 2; background: var(--ink); color: #fff; font-size: 11px; border-radius: 6px; padding: 0 7px; white-space: nowrap; line-height: 1.6; }
+b { font-weight: 700; color: #fff; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--yel); outline-offset: 2px; }
 .p1 { --pc: var(--c1); --ps: var(--c1s); } .p2 { --pc: var(--c2); --ps: var(--c2s); } .p3 { --pc: var(--c3); --ps: var(--c3s); }
 
-main { max-width: 1140px; margin: 0 auto; padding: 14px 16px 24px; }
+/* ---------- 左：木のわく（行き先はいつもここ） ---------- */
+nav.rail { position: fixed; left: 0; top: 0; bottom: 0; width: var(--rail); z-index: 6; display: flex; flex-direction: column;
+  background: linear-gradient(90deg, #6a4625, #8b5f38 55%, #6a4625); padding-bottom: env(safe-area-inset-bottom); }
+nav.rail a, nav.rail #tFab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 0;
+  color: #f8ecd9; font-size: 13px; font-weight: 700; line-height: 1.25; text-align: center; border: 0; border-left: 6px solid transparent; background: none; padding: 2px; }
+nav.rail svg { width: 28px; height: 28px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+nav.rail a.on { background: var(--board); color: var(--chalk); border-left-color: var(--yel); }
+nav.rail a.help { background: var(--help); color: #fff; flex: 1.15; }
+nav.rail a.help.on { border-left-color: #fff; }
+#tFab { font-variant-numeric: tabular-nums; }
+#tFab.run { background: #3f7a52; color: #fff; }
+#tFab.warn { background: #c96f1a; color: #fff; }
+#tFab.end { background: var(--help); color: #fff; animation: tblink 1s steps(2) infinite; }
+@keyframes tblink { 50% { opacity: .55; } }
 
-/* ---------- 下：いつでも同じ場所のボタン ---------- */
-nav.bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: #fff; border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
-nav.bottom .in { max-width: 1140px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); }
-nav.bottom a { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 66px; font-size: 14px; color: var(--sub); padding: 4px 2px; text-align: center; line-height: 1.25; }
-nav.bottom a .ic { font-size: 24px; line-height: 1.2; }
-nav.bottom a.on { color: var(--c); font-weight: 700; box-shadow: inset 0 5px 0 var(--c); }
-nav.bottom a.help { background: var(--helps); color: var(--help); font-weight: 700; }
-nav.bottom a.help.on { box-shadow: inset 0 5px 0 var(--help); }
+/* ---------- 上：10時間の道のり ---------- */
+nav.strip { position: fixed; left: var(--rail); right: 0; top: 0; height: var(--hd); z-index: 5; display: flex; background: var(--dark); border-bottom: 2px solid var(--line); }
+nav.strip a { flex: 1 1 0; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 4px; font-size: 13px; line-height: 1.2; font-weight: 700;
+  color: var(--chalk); border-bottom: 6px solid var(--pc); border-right: 1px solid var(--line); }
+nav.strip a i { font-style: normal; flex: 0 0 auto; min-width: 28px; height: 28px; padding: 0 5px; border-radius: 14px; border: 2px solid var(--pc); color: var(--pc); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+nav.strip a.done { color: var(--dim); }
+nav.strip a.now { flex: 1.6 1 0; background: var(--pc); color: var(--dark); font-size: 16px; white-space: nowrap; }
+nav.strip a.now i { background: var(--dark); border-color: var(--dark); }
+nav.strip a.now::after { content: "いまここ"; font-size: 11px; background: var(--dark); color: #fff; border-radius: 4px; padding: 0 6px; line-height: 1.7; margin-left: 2px; }
+
+/* ---------- 下：チョーク置き（3本のチョークが色の見分け） ---------- */
+.tray { position: fixed; left: var(--rail); right: 0; bottom: 0; height: var(--tray); z-index: 5; background: linear-gradient(#946a41, #6a4625);
+  display: flex; align-items: center; gap: 22px; padding: 0 22px; font-size: 13px; font-weight: 700; color: #f8ecd9; }
+.tray span { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.tray span::before { content: ""; width: 38px; height: 10px; border-radius: 3px; background: var(--pc); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+
+main { margin-left: var(--rail); padding: calc(var(--hd) + 20px) 22px 24px; max-width: calc(1180px + var(--rail)); }
 
 /* ---------- 共通の部品 ---------- */
-h1 { font-size: 25px; margin: 4px 0 12px; line-height: 1.4; }
-h2 { font-size: 21px; margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
-h2 .ic { flex: 0 0 32px; height: 32px; border-radius: 10px; background: var(--c); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 17px; }
-.note { color: var(--sub); font-size: 16px; margin: 6px 4px; }
-.meate { background: var(--cs); border: 3px solid var(--c); border-radius: 18px; padding: 12px 18px; }
-.meate .lbl { display: inline-block; background: var(--c); color: #fff; font-size: 15px; font-weight: 700; border-radius: 999px; padding: 0 12px; }
-.meate .t { font-size: 24px; font-weight: 700; line-height: 1.5; margin-top: 4px; }
-.meate-note { color: var(--sub); font-size: 16px; margin: 6px 4px 0; }
+h1 { font: 700 25px/1.4 var(--kyo); margin: 4px 0 14px; }
+h2 { font-size: 20px; margin: 24px 0 10px; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
+h2 .ic { flex: 0 0 auto; font-size: 20px; }
+.note { color: var(--dim); font-size: 16px; margin: 6px 4px; }
+.meate, .goal { position: relative; border: 3px solid var(--yel); border-radius: var(--hand); padding: 14px 18px 12px; margin-top: 12px; }
+.meate .lbl, .goal .lbl { position: absolute; top: -14px; left: 14px; background: var(--yel); color: var(--dark); font-size: 14px; font-weight: 700; padding: 0 10px; border-radius: 4px; line-height: 1.7; }
+.meate .t, .goal .t { font: 700 26px/1.5 var(--kyo); margin-top: 2px; }
+.meate-note { color: var(--dim); font-size: 16px; margin: 6px 4px 0; }
 .pg { display: inline-block; white-space: nowrap; background: var(--cs); color: var(--c); font-weight: 700; border-radius: 8px; padding: 0 7px; margin: 0 1px; }
-.mono { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 0; }
-.mono span { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 3px 12px; font-size: 16px; font-weight: 700; }
-.mono span::before { content: "📄 "; }
-.mono span.book::before { content: "📕 "; }
+.blank { display: inline-block; min-width: 4em; border-bottom: 2px solid currentColor; }
+.must { color: var(--helpc); font-weight: 700; }
 
-.step { display: flex; gap: 14px; align-items: flex-start; background: #fff; border-radius: 16px; padding: 12px 16px; margin-bottom: 9px; box-shadow: 0 1px 0 var(--line); }
-.step .k { flex: 0 0 38px; height: 38px; border-radius: 50%; background: var(--c); color: #fff; font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-.step.pair { border-left: 8px solid var(--c3); }
-.step .who { display: inline-block; white-space: nowrap; font-size: 14px; font-weight: 700; color: var(--c3); border: 2px solid var(--c3); border-radius: 999px; padding: 0 8px; margin-left: 6px; line-height: 1.5; vertical-align: 1px; }
+/* 紙（黒板にはったもの）：白・黄色の地に黒い字。中の色はこい色にもどす */
+.paper, .mono span, .hint, .fnote, .memo-ex, .tbox {
+  color: #1d1d1f; --c: #2b6a45; --cs: #e3f3ea; --c1: #2f6fb5; --c1s: #e6effa; --c2: #2e8b57; --c2s: #e3f3ea; --c3: #c96f1a; --c3s: #fdf0e1; --helpc: #b3261e; --helps: #fde8e6;
+}
+.paper b, .mono span b, .hint b, .fnote b, .memo-ex b, .tbox b { color: inherit; }
+.mono { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 6px; }
+.mono span { background: var(--chalk); border-radius: 3px; padding: 1px 10px; font-size: 16px; font-weight: 700; box-shadow: 2px 3px 0 rgba(0,0,0,.25); }
 
-details.hint { margin-top: 14px; }
-details.hint summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; background: var(--fu); border: 3px dashed var(--fuline); border-radius: 16px; padding: 12px 18px; font-weight: 700; font-size: 21px; min-height: 64px; }
-details.hint summary::-webkit-details-marker { display: none; }
-details.hint summary small { font-weight: 400; font-size: 15px; color: var(--sub); margin-left: 6px; }
-details.hint summary::after { content: "＋"; font-size: 24px; }
-details.hint[open] summary::after { content: "－"; }
-details.hint[open] summary { border-style: solid; border-radius: 16px 16px 0 0; }
-.fus { background: #fffbe2; border: 3px solid var(--fuline); border-top: 0; border-radius: 0 0 16px 16px; padding: 10px 12px 4px; }
-.fu { background: var(--fu); border-radius: 4px 4px 14px 4px; padding: 9px 14px; margin-bottom: 10px; box-shadow: 2px 3px 0 rgba(0, 0, 0, .07); }
-.fu::before { content: "💡 "; }
+/* やること：黒板にチョークで書いた番号と文 */
+.steps { border-top: 2px solid var(--line); }
+.step { display: flex; gap: 14px; align-items: flex-start; padding: 9px 10px 9px 6px; border-bottom: 2px dashed var(--line); }
+.step .k { flex: 0 0 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--c); color: var(--c); font-weight: 700; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+.step.pair .k { border-color: var(--c3); color: var(--c3); }
+.step .who { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: 700; color: var(--c3); border: 2px solid var(--c3); border-radius: 4px; padding: 0 6px; margin-left: 6px; line-height: 1.5; vertical-align: 1px; }
 
-.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.tiles a { display: flex; align-items: center; gap: 10px; background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; font-weight: 700; min-height: 64px; line-height: 1.4; }
+/* ヒント：黄色いふせん。2行だけ見せて、おすと全部読める */
+.hints { display: flex; flex-direction: column; gap: 9px; }
+.hint { display: block; width: 100%; text-align: left; background: var(--paper); border: 0; border-radius: 3px 3px 12px 3px; padding: 8px 12px; font-size: 17px; line-height: 1.6; box-shadow: 2px 3px 0 rgba(0,0,0,.25); }
+.hint > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.hint.open > span { display: block; }
+
+/* チョークの線でかこんだ、おせる所 */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.tiles a { display: flex; align-items: center; gap: 10px; border: 2px solid var(--line2); border-radius: var(--hand); padding: 10px 14px; font-weight: 700; min-height: 64px; line-height: 1.4; }
 .tiles a .e { font-size: 26px; }
-.tiles a small { display: block; font-weight: 400; color: var(--sub); font-size: 14px; }
-.tiles a.help { background: var(--helps); border-color: var(--help); color: var(--help); }
-.tiles a:active, .sq:active, button:active, .kb:active { transform: translateY(1px); }
+.tiles a small { display: block; font-weight: 400; color: var(--dim); font-size: 14px; }
+.tiles a.help { background: var(--help); border-color: var(--help); color: #fff; }
+.tiles a.help small { color: #ffe1dd; }
+.tiles a:active, nav.strip a:active, nav.rail a:active, button:active { transform: translateY(1px); }
 
 .say { display: flex; flex-direction: column; gap: 8px; }
-.say div { background: #fff; border: 2px solid var(--line); border-radius: 16px 16px 16px 4px; padding: 8px 16px; font-size: 20px; }
+.say div { border: 2px solid var(--line2); border-radius: 16px 16px 16px 4px; padding: 8px 16px; font-size: 20px; }
 .say div.ask { border-color: var(--c3); background: var(--c3s); border-radius: 16px 16px 4px 16px; margin-left: 2em; }
-.blank { display: inline-block; min-width: 4em; border-bottom: 2px solid var(--ink); }
 
 .menu5 { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
-.menu5 div { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 8px 14px; line-height: 1.5; }
+.menu5 div { border: 2px solid var(--line2); border-radius: var(--hand); padding: 8px 14px; line-height: 1.5; }
 .menu5 div b { display: block; font-size: 20px; color: var(--c); }
-.menu5 div.must-box { border: 3px solid var(--help); background: var(--helps); }
-.menu5 div.must-box b { color: var(--help); }
+.menu5 div.must-box { border: 3px solid var(--helpc); background: var(--helps); }
+.menu5 div.must-box b { color: var(--helpc); }
 
 .pn { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; }
-.pn a { display: block; background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 10px 16px; min-height: 64px; font-weight: 700; }
-.pn a small { display: block; font-weight: 400; color: var(--sub); font-size: 14px; }
+.pn a { display: block; border: 2px solid var(--line2); border-radius: var(--hand); padding: 10px 16px; min-height: 64px; font-weight: 700; }
+.pn a small { display: block; font-weight: 400; color: var(--dim); font-size: 14px; }
 .pn a.nx { text-align: right; border-color: var(--c); }
 
-/* 時間のページ：横向きは2列（左＝やること、右＝使うもの・ヒント・ほかのページ） */
+/* 時間のページ：横向きは2列（左＝めあて・やること／右＝使うもの・ヒント・ほかのページ） */
 .cols { display: grid; grid-template-columns: 1fr; gap: 0 22px; }
-@media (min-width: 1000px) {
-  .cols { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: start; }
-  .cols .right { position: sticky; top: calc(var(--hd, 110px) + 10px); }
-  .cols .right h2:first-child { margin-top: 22px; }
+@media (min-width: 901px) {
+  .cols { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); align-items: start; }
+  .cols .right { position: sticky; top: calc(var(--hd) + 16px); max-height: calc(100vh - var(--hd) - var(--tray) - 32px); overflow-y: auto; padding: 0 4px 8px 0; }
+  .cols .right h2:first-child { margin-top: 12px; }
 }
 
 /* ホーム */
-.back { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--cs); border: 2px solid var(--c); border-radius: 14px; padding: 10px 16px; font-weight: 700; margin-bottom: 12px; min-height: 60px; }
-.goal { background: #fff; border: 3px solid var(--ink); border-radius: 18px; padding: 12px 18px; font-size: 22px; font-weight: 700; line-height: 1.5; }
-.goal .lbl { display: inline-block; background: var(--ink); color: #fff; font-size: 15px; border-radius: 999px; padding: 0 12px; margin-right: 8px; vertical-align: 3px; }
-.phase { margin-top: 16px; }
-.phase .ph { font-size: 16px; font-weight: 700; color: var(--pc); margin: 0 4px 6px; }
-.lt { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
-.lt a { display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid var(--line); border-left: 8px solid var(--pc); border-radius: 14px; padding: 10px 14px; font-weight: 700; font-size: 20px; min-height: 70px; line-height: 1.35; }
-.lt a .n { flex: 0 0 auto; min-width: 46px; height: 46px; padding: 0 6px; border-radius: 23px; background: var(--pc); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 19px; }
-.lt a.last { background: var(--ps); }
+.resume { display: flex; align-items: center; gap: 18px; background: var(--c); color: var(--dark); border-radius: 6px; padding: 14px 22px; margin-bottom: 26px; }
+.resume i { font-style: normal; flex: 0 0 64px; height: 64px; border-radius: 50%; background: var(--dark); color: var(--c); font-weight: 700; font-size: 26px; display: flex; align-items: center; justify-content: center; }
+.resume small { display: block; font-size: 15px; line-height: 1.4; font-weight: 700; }
+.resume b { font: 700 28px/1.4 var(--kyo); color: inherit; }
+.resume em { margin-left: auto; font-style: normal; font-weight: 700; background: var(--dark); color: #fff; border-radius: 4px; padding: 6px 18px; white-space: nowrap; }
+.road { display: grid; grid-template-columns: 4fr 2fr 2fr; border: 2px solid var(--line); border-radius: var(--hand); }
+.road > div { padding: 10px 14px 12px; border-right: 2px solid var(--line); }
+.road > div:last-child { border-right: 0; }
+.road h3 { margin: 0 0 4px; font-size: 18px; color: var(--pc); border-bottom: 5px solid var(--pc); padding-bottom: 4px; }
+.road .ls { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0 14px; }
+.road a { display: flex; align-items: center; gap: 10px; min-height: 64px; font-size: 21px; font-weight: 700; border-bottom: 2px dashed var(--line); }
+.road a i { font-style: normal; min-width: 36px; height: 36px; padding: 0 5px; border-radius: 18px; border: 2px solid var(--pc); color: var(--pc); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.road a.done { color: var(--dim); }
+.road a.now i { background: var(--pc); color: var(--dark); }
 
 /* 困ったとき：左にこまりごと、右に使えるもの */
 .kgrid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-@media (min-width: 900px) { .kgrid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: start; } .kpanel { position: sticky; top: calc(var(--hd, 110px) + 10px); } }
+@media (min-width: 901px) { .kgrid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); align-items: start; } .kpanel { position: sticky; top: calc(var(--hd) + 16px); } }
 .klist { display: flex; flex-direction: column; gap: 8px; }
-button.kb { font: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 8px 14px; min-height: 60px; font-weight: 700; font-size: 18px; color: var(--ink); line-height: 1.4; }
+button.kb { text-align: left; display: flex; align-items: center; gap: 12px; background: none; border: 2px solid var(--line2); border-radius: var(--hand); padding: 8px 14px; min-height: 60px; font-weight: 700; font-size: 18px; color: var(--chalk); line-height: 1.4; }
 button.kb .e { font-size: 24px; flex: 0 0 auto; }
-button.kb.on { border: 3px solid var(--help); background: var(--helps); }
-.kpanel { background: #fff; border: 3px solid var(--help); border-radius: 18px; padding: 14px 18px; min-height: 200px; }
-.kpanel h3 { margin: 0 0 8px; color: var(--help); font-size: 21px; line-height: 1.4; }
+button.kb.on { border: 3px solid var(--helpc); background: var(--helps); }
+.kpanel { border: 3px solid var(--helpc); border-radius: var(--hand); padding: 14px 18px; min-height: 200px; }
+.kpanel h3 { margin: 0 0 8px; color: var(--helpc); font-size: 21px; line-height: 1.4; }
 .kpanel ol { margin: 0; padding-left: 1.4em; }
 .kpanel li { margin-bottom: 8px; }
-.kpanel .empty { color: var(--sub); }
+.kpanel .empty { color: var(--dim); }
 
 /* 道具箱・型・きまり */
-.jump { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; position: sticky; top: var(--hd, 110px); background: var(--bg); z-index: 4; }
-.jump a { flex: 0 0 auto; border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
-h2[id] { scroll-margin-top: calc(var(--hd, 110px) + 60px); }
+.jump { display: flex; gap: 6px; overflow-x: auto; padding: 6px 0 8px; position: sticky; top: var(--hd); background: var(--board); z-index: 4; }
+.jump a { flex: 0 0 auto; border: 2px solid var(--line2); border-radius: 999px; padding: 6px 14px; font-size: 15px; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+h2[id] { scroll-margin-top: calc(var(--hd) + 64px); }
 table.t { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
-table.t th, table.t td { background: #fff; padding: 8px 14px; text-align: left; vertical-align: top; }
-table.t th { width: 8em; background: var(--cs); color: var(--c); white-space: nowrap; border-radius: 12px 0 0 12px; }
-table.t td { border-radius: 0 12px 12px 0; }
+table.t th, table.t td { padding: 8px 14px; text-align: left; vertical-align: top; border: 2px solid var(--line); }
+table.t th { width: 8em; background: var(--cs); color: var(--c); white-space: nowrap; border-radius: 10px 0 0 10px; border-right: 0; }
+table.t td { border-radius: 0 10px 10px 0; border-left: 0; }
 .kata { display: grid; grid-template-columns: 1fr; gap: 10px; }
-.kata .card { background: #fff; border-radius: 16px; padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: center; box-shadow: 0 1px 0 var(--line); }
-.kata .no { display: inline-block; font-weight: 700; color: #fff; background: var(--c); border-radius: 999px; padding: 0 12px; font-size: 16px; }
+.kata .card { border: 2px solid var(--line2); border-radius: var(--hand); padding: 12px 16px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: center; }
+.kata .no { display: inline-block; font-weight: 700; color: var(--dark); background: var(--c); border-radius: 999px; padding: 0 12px; font-size: 16px; }
 .kata .bun { font-size: 20px; font-weight: 700; margin-top: 4px; }
-.kata .muku { color: var(--sub); font-size: 16px; margin-top: 4px; }
+.kata .muku { color: var(--dim); font-size: 16px; margin-top: 4px; }
 .zu { display: flex; flex-direction: column; gap: 4px; }
 .zu div { border: 2px solid var(--line); border-radius: 10px; padding: 3px 10px; font-size: 16px; display: flex; gap: 8px; }
-.zu div b { color: var(--sub); font-weight: 400; min-width: 3em; }
+.zu div b { color: var(--dim); font-weight: 400; min-width: 3em; }
 .zu div.star { border-color: var(--c3); background: var(--c3s); font-weight: 700; }
-.must { color: var(--help); font-weight: 700; }
 .gates { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
-.gate { background: #fff; border: 3px solid var(--c2); border-radius: 18px 18px 12px 12px; padding: 0 0 10px; overflow: hidden; }
-.gate h3 { margin: 0 0 6px; background: var(--c2); color: #fff; padding: 4px 14px; font-size: 19px; }
+.gate { border: 3px solid var(--c2); border-radius: var(--hand); padding: 0 0 10px; overflow: hidden; }
+.gate h3 { margin: 0 0 6px; background: var(--c2); color: var(--dark); padding: 4px 14px; font-size: 19px; }
 .gate div { padding: 0 14px; }
 .gate .note { margin: 4px 14px 0; padding: 0; }
-ul.list { list-style: none; padding: 0; margin: 0; }
-ul.list li { background: #fff; border-radius: 12px; padding: 8px 14px 8px 40px; margin-bottom: 6px; position: relative; }
+ul.list { list-style: none; padding: 0; margin: 0; border-top: 2px solid var(--line); }
+ul.list li { padding: 8px 14px 8px 40px; border-bottom: 2px dashed var(--line); position: relative; }
 ul.list li::before { content: "▶"; position: absolute; left: 14px; color: var(--c); font-size: 14px; top: 11px; }
 
-footer { max-width: 1140px; margin: 0 auto; padding: 0 16px calc(150px + env(safe-area-inset-bottom)); color: var(--sub); font-size: 13px; }
+footer { margin-left: var(--rail); padding: 0 22px calc(var(--tray) + 24px); color: var(--dim); font-size: 13px; }
 
-@media (max-width: 999px) {
-  .brand { flex-direction: row; align-items: baseline; gap: 14px; width: 100%; }
-  .legend { flex-direction: row; gap: 10px; }
-  nav.board { padding-top: 22px; }
+/* ---------- たて向き：行き先は下へ、列は1つに。チョーク置きは出さない ---------- */
+@media (max-width: 900px) {
+  :root { --rail: 0px; --tray: 0px; }
+  .tray { display: none; }
+  nav.rail { top: auto; right: 0; width: auto; height: 68px; flex-direction: row; background: linear-gradient(#946a41, #6a4625); box-sizing: content-box; }
+  nav.rail a, nav.rail #tFab { border-left: 0; border-top: 6px solid transparent; font-size: 11px; }
+  nav.rail a.on { border-top-color: var(--yel); }
+  nav.rail svg { width: 24px; height: 24px; }
+  nav.strip a:not(.now) { font-size: 0; gap: 0; }
+  .road { grid-template-columns: 1fr; }
+  .road > div { border-right: 0; border-bottom: 2px solid var(--line); }
+  .road > div:last-child { border-bottom: 0; }
+  footer { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .meate .t, .goal .t { font-size: 22px; }
 }
 @media (max-width: 700px) {
   body { font-size: 17px; }
   h1 { font-size: 22px; }
-  .meate .t { font-size: 20px; }
-  .legend { display: none; }
   .kata .card { grid-template-columns: 1fr; }
   table.t th { width: auto; white-space: normal; }
-  nav.bottom a { font-size: 11px; }
+  .resume { flex-wrap: wrap; } .resume em { margin-left: 0; }
 }
 
-/* ---------- 構成メモの書き方（2026-11-16 追加） ---------- */
-.memo-ex { background:#fff; border:2px solid var(--line); border-radius:16px; padding:10px 14px; }
-.memo-ex .mh { font-size:16px; color:var(--sub); margin-bottom:6px; }
-.memo-ex .mh b { color:var(--ink); }
-.memo-ex .kata-in { display:inline-block; border:2px solid var(--c); color:var(--c); border-radius:8px; padding:0 8px; font-weight:700; margin-left:4px; }
-.mrow { display:grid; grid-template-columns:4.2em 1fr 3.2em; gap:6px; margin-bottom:6px; }
-.mrow > div { border:2px solid #bbb; border-radius:8px; padding:6px 10px; font-size:17px; line-height:1.5; background:#fff; }
-.mrow .lb { text-align:center; font-weight:700; background:#f2f2f2; display:flex; align-items:center; justify-content:center; }
-.mrow .kk { text-align:center; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:20px; }
-.mrow.star > div { border-color:var(--c); }
-.mrow.star .kk, .mrow .kk.k { color:var(--help); }
-.mrow .st { color:var(--help); font-weight:700; margin-right:4px; }
-table.starpos { border-collapse:separate; border-spacing:0 6px; }
-table.starpos th { background:var(--cs); color:var(--c); padding:6px 12px; border-radius:10px 0 0 10px; white-space:nowrap; }
-table.starpos td { background:#fff; padding:6px 12px; border-radius:0 10px 10px 0; }
-.memo-cta { display:inline-block; margin-top:10px; font-weight:700; color:var(--c); }
-/* ---------- ふせんの書き方（2026-11-16 追加） ---------- */
-.fkata { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
-.fkata .card { background:#fff; border:2px solid var(--line); border-radius:16px; padding:10px 14px 12px; }
-.fkata .card h3 { margin:0 0 4px; font-size:18px; color:var(--c); }
-.fkata .kt { font-size:18px; line-height:1.6; }
-.fkata .kt .blank, .fmini .blank { display:inline-block; min-width:3.2em; border-bottom:2px solid var(--ink); }
-.fnote { background:var(--fu); border:1px solid var(--fuline); border-radius:4px 4px 14px 4px; padding:8px 12px; margin-top:8px; font-size:17px; line-height:1.6; box-shadow:2px 3px 0 rgba(0,0,0,.08); transform:rotate(-.6deg); }
-.fnote::before { content:"ふせんの例"; display:block; font-size:12px; color:var(--sub); font-weight:700; }
-table.fbad { width:100%; border-collapse:separate; border-spacing:0 8px; }
-table.fbad td { background:#fff; padding:8px 12px; font-size:17px; vertical-align:middle; }
-table.fbad td.x { color:var(--sub); width:30%; border-radius:12px 0 0 12px; }
-table.fbad td.ar2 { width:2em; text-align:center; font-weight:700; color:var(--c); }
-table.fbad td.o { border-radius:0 12px 12px 0; font-weight:700; }
-.fmini { background:#fff; border-radius:16px; padding:10px 16px; }
-.fmini div { padding:4px 0; border-bottom:1px dashed var(--line); font-size:17px; }
-.fmini div:last-child { border-bottom:0; }
-.fmini a.more { display:inline-block; margin-top:8px; font-weight:700; color:var(--c); }
-@media (max-width: 700px) { table.fbad td.x { width:auto; } }
-/* ---------- タイマー（2026-11-16 追加）：どのページからでも右下のボタンで開く ---------- */
-.tfab { position: fixed; right: 14px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 7; border: 0; border-radius: 999px;
-  background: #fff; color: var(--ink); font: inherit; font-size: 18px; font-weight: 700; padding: 10px 18px; min-height: 52px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.18), 0 0 0 2px var(--line); cursor: pointer; font-variant-numeric: tabular-nums; }
-.tfab.run { background: var(--c2); color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.25); }
-.tfab.warn { background: var(--c3); color: #fff; }
-.tfab.end { background: var(--help); color: #fff; animation: tblink 1s steps(2) infinite; }
-@keyframes tblink { 50% { opacity: .55; } }
-.tov { position: fixed; inset: 0; z-index: 20; background: rgba(30,30,30,.45); display: flex; align-items: center; justify-content: center; padding: 12px; }
+/* ---------- 構成メモの書き方（紙の見本） ---------- */
+.memo-ex { background: var(--chalk); border-radius: 4px; padding: 10px 14px; box-shadow: 2px 3px 0 rgba(0,0,0,.25); }
+.memo-ex .mh { font-size: 16px; color: #555; margin-bottom: 6px; }
+.memo-ex .mh b { color: #1d1d1f; }
+.memo-ex .note { color: #555; }
+.memo-ex .kata-in { display: inline-block; border: 2px solid var(--c); color: var(--c); border-radius: 8px; padding: 0 8px; font-weight: 700; margin-left: 4px; }
+.mrow { display: grid; grid-template-columns: 4.2em 1fr 3.2em; gap: 6px; margin-bottom: 6px; }
+.mrow > div { border: 2px solid #bbb; border-radius: 8px; padding: 6px 10px; font-size: 17px; line-height: 1.5; background: #fff; }
+.mrow .lb { text-align: center; font-weight: 700; background: #f2f2f2; display: flex; align-items: center; justify-content: center; }
+.mrow .kk { text-align: center; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.mrow.star > div { border-color: var(--c); }
+.mrow.star .kk, .mrow .kk.k { color: var(--helpc); }
+.mrow .st { color: var(--helpc); font-weight: 700; margin-right: 4px; }
+table.starpos { border-collapse: separate; border-spacing: 0 6px; }
+table.starpos th { background: var(--cs); color: var(--c); padding: 6px 12px; border-radius: 10px 0 0 10px; white-space: nowrap; border: 2px solid var(--line); border-right: 0; }
+table.starpos td { padding: 6px 12px; border-radius: 0 10px 10px 0; border: 2px solid var(--line); border-left: 0; }
+.memo-cta { display: inline-block; margin-top: 10px; font-weight: 700; color: var(--c); }
+/* ---------- ふせんの書き方 ---------- */
+.fkata { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.fkata .card { border: 2px solid var(--line2); border-radius: var(--hand); padding: 10px 14px 12px; }
+.fkata .card h3 { margin: 0 0 4px; font-size: 18px; color: var(--c); }
+.fkata .kt { font-size: 18px; line-height: 1.6; }
+.fkata .kt .blank, .fmini .blank { display: inline-block; min-width: 3.2em; border-bottom: 2px solid currentColor; }
+.fnote { background: var(--paper); border-radius: 3px 3px 12px 3px; padding: 8px 12px; margin-top: 8px; font-size: 17px; line-height: 1.6; box-shadow: 2px 3px 0 rgba(0,0,0,.25); transform: rotate(-.6deg); }
+.fnote::before { content: "ふせんの例"; display: block; font-size: 12px; color: #666; font-weight: 700; }
+table.fbad { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+table.fbad td { padding: 8px 12px; font-size: 17px; vertical-align: middle; border-top: 2px solid var(--line); border-bottom: 2px solid var(--line); }
+table.fbad td.x { color: var(--dim); width: 30%; border-radius: 10px 0 0 10px; border-left: 2px solid var(--line); }
+table.fbad td.ar2 { width: 2em; text-align: center; font-weight: 700; color: var(--c); }
+table.fbad td.o { border-radius: 0 10px 10px 0; border-right: 2px solid var(--line); font-weight: 700; }
+.fmini { border: 2px solid var(--line2); border-radius: var(--hand); padding: 10px 16px; }
+.fmini div { padding: 4px 0; border-bottom: 1px dashed var(--line); font-size: 17px; }
+.fmini div:last-child { border-bottom: 0; }
+.fmini a.more { display: inline-block; margin-top: 8px; font-weight: 700; color: var(--c); }
+@media (max-width: 700px) { table.fbad td.x { width: auto; } }
+
+/* ---------- タイマー（左の「タイマー」から開く。中は白い紙） ---------- */
+.tov { position: fixed; inset: 0; z-index: 20; background: rgba(10,20,16,.6); display: flex; align-items: center; justify-content: center; padding: 12px; }
 .tov[hidden] { display: none; }
-.tbox { background: #fff; border-radius: 22px; width: min(620px, 100%); max-height: 100%; overflow: auto; padding: 14px 20px 18px; box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+.tbox { background: #fff; border-radius: 22px; width: min(620px, 100%); max-height: 100%; overflow: auto; padding: 14px 20px 18px; box-shadow: 0 8px 30px rgba(0,0,0,.4); }
 .thead { display: flex; align-items: center; gap: 8px; }
 .thead b { font-size: 22px; flex: 1; }
-.thead button, .tadj button, .tchips button, .tmain button, .tset { font: inherit; cursor: pointer; border-radius: 14px; border: 2px solid var(--line); background: #fff; min-height: 48px; padding: 4px 14px; }
+.thead button, .tadj button, .tchips button, .tmain button, .tset { cursor: pointer; border-radius: 14px; border: 2px solid #ddd8cc; background: #fff; color: #1d1d1f; min-height: 48px; padding: 4px 14px; }
 .tround { text-align: center; font-size: 22px; font-weight: 700; color: var(--c2); min-height: 1.5em; margin-top: 4px; }
 .tdisp { text-align: center; font-size: 104px; line-height: 1.05; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .02em; margin: 2px 0 6px; }
 .tdisp.warn { color: var(--c3); } .tdisp.end { color: var(--help); }
@@ -246,14 +269,14 @@ table.fbad td.o { border-radius:0 12px 12px 0; font-weight:700; }
 .tmain .tgo { background: var(--c2); border-color: var(--c2); color: #fff; }
 .tmain .tgo.stop { background: var(--c3); border-color: var(--c3); }
 .tmain .trs.arm { background: var(--helps); border-color: var(--help); color: var(--help); font-size: 16px; }
-.tlbl { font-size: 15px; color: var(--sub); margin: 14px 0 4px; font-weight: 700; }
+.tlbl { font-size: 15px; color: #666; margin: 14px 0 4px; font-weight: 700; }
 .tchips { display: flex; flex-wrap: wrap; gap: 6px; }
 .tchips button { font-size: 18px; min-width: 64px; }
 .tchips button.on { border-color: var(--c2); background: var(--c2s); color: var(--c2); font-weight: 700; }
 .tadj { display: flex; gap: 6px; margin-top: 6px; }
 .tadj button { font-size: 16px; white-space: nowrap; flex: 1; padding: 4px 6px; }
 .tset { display: block; width: 100%; margin-top: 14px; font-size: 19px; font-weight: 700; border-color: var(--c3); background: var(--c3s); text-align: left; }
-.tmsg { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 30; background: var(--help); color: #fff; font-size: 34px; font-weight: 700; padding: 18px 34px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,.3); pointer-events: none; text-align: center; white-space: nowrap; }
+.tmsg { position: fixed; left: 50%; top: 40%; transform: translate(-50%, -50%); z-index: 30; background: var(--help); color: #fff; font-size: 34px; font-weight: 700; padding: 18px 34px; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,.4); pointer-events: none; text-align: center; white-space: nowrap; }
 .tmsg[hidden] { display: none; }
 /* 大きく：グループの真ん中に置いて、みんなで見る */
 .tbox.big { width: 100%; height: 100%; max-height: none; border-radius: 0; display: flex; flex-direction: column; }
@@ -262,19 +285,15 @@ table.fbad td.o { border-radius:0 12px 12px 0; font-weight:700; }
 .tbox.big .tdisp { font-size: min(34vw, 52vh); flex: 1; display: flex; align-items: center; justify-content: center; }
 .tbox.big .tround { font-size: 34px; }
 .tbox.big .tbar { height: 20px; }
-@media (max-width: 700px) { .tdisp { font-size: 80px; } .tfab { font-size: 16px; } .tmsg { font-size: 24px; padding: 14px 22px; } .tchips button { min-width: 0; padding: 4px 10px; } }
+@media (max-width: 700px) { .tdisp { font-size: 80px; } .tmsg { font-size: 24px; padding: 14px 22px; } .tchips button { min-width: 0; padding: 4px 10px; } }
+@media (prefers-reduced-motion: reduce) { #tFab.end { animation: none; } .tbar i { transition: none; } }
 </style>
 </head>
 <body>
-<header class="top"><div class="top-in">
-  <div class="brand"><a href="#/">みりょく発見ナビ</a>
-    <div class="legend"><span><i style="background:var(--c1)"></i>読んで見つける</span><span><i style="background:var(--c2)"></i>材料を集める</span><span><i style="background:var(--c3)"></i>書いて伝える</span></div>
-  </div>
-  <nav class="board" id="board" aria-label="学習のすごろく"></nav>
-</div></header>
+<nav class="strip" id="board" aria-label="10時間の道のり"></nav>
 <main id="main"></main>
-<nav class="bottom" id="bottom" aria-label="いつでも使うページ"><div class="in" id="bottomIn"></div></nav>
-<button id="tFab" class="tfab" type="button" aria-label="タイマーを開く">⏱ <span id="tFabT">タイマー</span></button>
+<nav class="rail" id="rail" aria-label="いつでも使うページ"></nav>
+<div class="tray" aria-hidden="true"><span class="p1">読んで見つける ①〜④</span><span class="p2">材料を集める ⑤〜⑧</span><span class="p3">書いて伝える ⑨⑩</span></div>
 <div id="tOv" class="tov" hidden><div class="tbox" id="tBox" role="dialog" aria-label="タイマー">
   <div class="thead"><b>⏱ タイマー</b><button type="button" id="tBig">大きく</button><button type="button" id="tClose">✕ とじる</button></div>
   <div class="tround" id="tRound"></div>
@@ -311,51 +330,70 @@ const LAST = "miryoku-navi-last";
 const getLast = () => { try { return localStorage.getItem(LAST) || ""; } catch (e) { return ""; } };
 const setLast = (id) => { try { localStorage.setItem(LAST, id); } catch (e) {} };
 
+/* 線でかいた印（黒板の上で絵文字が浮かないように） */
+const SVG = {
+  home: '<path d="M3 11l9-7 9 7M6 9.5V20h12V9.5"/>',
+  now: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2.5"/>',
+  dougu: '<path d="M5 5h14v14H5zM9 9.5h6M9 13h6"/>',
+  kata: '<path d="M4 5h16v4H4zM4 11h7v8H4zM13 11h7v8h-7z"/>',
+  kimari: '<path d="M6 21V4h11l-2 4 2 4H6"/>',
+  timer: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4M9.5 3h5"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.1 1-1.1 1.8M12 17h.01"/>',
+};
+const ico = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${SVG[k]}</svg>`;
 function bottom(page) {
   const L = D.lessons.find((x) => x.id === getLast());
   const items = [
-    ["#/", "🏠", "ホーム", page === "home", ""],
-    [L ? `#/l/${L.id}` : "#/", "📍", L ? `${L["番号"]}の時間` : "今日の時間", page === "lesson", ""],
-    ["#/dougu", "🧰", "ことばの道具箱", page === "dougu", ""],
-    ["#/kata", "🧩", "構成の型", page === "kata", ""],
-    ["#/komatta", "🆘", "困ったとき", page === "komatta", "help"],
+    ["#/", "home", "ホーム", page === "home", ""],
+    [L ? `#/l/${L.id}` : "#/", "now", L ? `${L["番号"]}の時間` : "今日の時間", page === "lesson", ""],
+    ["#/dougu", "dougu", "ことばの<br>道具箱", page === "dougu", ""],
+    ["#/kata", "kata", "構成の型", page === "kata", ""],
+    ["#/kimari", "kimari", "きまり", page === "kimari", ""],
   ];
-  $("#bottomIn").innerHTML = items.map(([h, ic, t, on, c]) => `<a href="${h}" class="${c} ${on ? "on" : ""}"><span class="ic">${ic}</span>${esc(t)}</a>`).join("");
+  const rail = $("#rail");
+  if (!$("#tFab")) {
+    rail.innerHTML = `<span id="railLinks" style="display:contents"></span><button id="tFab" type="button" aria-label="タイマーを開く">${ico("timer")}<span id="tFabT">タイマー</span></button><a href="#/komatta" class="help" id="railHelp">${ico("help")}困ったとき</a>`;
+    $("#tFab").onclick = tOpen;
+  }
+  $("#railLinks").innerHTML = items.map(([h, k, t, on, c]) => `<a href="${h}" class="${c} ${on ? "on" : ""}">${ico(k)}${t}</a>`).join("");
+  $("#railHelp").classList.toggle("on", page === "komatta");
 }
 
 function board(cur) {
   const ci = D.lessons.findIndex((l) => l.id === cur);
   $("#board").innerHTML = D.lessons.map((l, i) => {
     const st = i === ci ? "now" : ci >= 0 && i < ci ? "done" : "";
-    const w = esc(l["見出し"]).replace(/^(.{2,3}を)/, "$1<br>");
-    return `<a href="#/l/${l.id}" class="sq p${phase(l.id)} ${st}">${st === "now" ? '<span class="flag">いまここ</span>' : ""}<span class="n">${esc(num(l))}</span><span class="w">${w}</span></a>`;
+    const w = st === "now" ? esc(l["見出し"]) : esc(l["見出し"]).replace(/^(.{2,3}を)(.{3,})$/, "$1<br>$2");
+    return `<a href="#/l/${l.id}" class="p${phase(l.id)} ${st}" ${st === "now" ? 'aria-current="step"' : ""}><i>${esc(num(l))}</i><span>${w}</span></a>`;
   }).join("");
-  const on = $("#board .now");
-  if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
 }
 
 const list = (arr) => `<ul class="list">${arr.map((x) => `<li>${md(x)}</li>`).join("")}</ul>`;
 const PAIR = /ペア|グループ/;
-const steps = (arr) => arr.map((x, i) => {
+const steps = (arr) => `<div class="steps">${arr.map((x, i) => {
   const who = (x.match(PAIR) || [""])[0];
-  return `<div class="step ${who ? "pair" : ""}"><span class="k">${i + 1}</span><div>${md(x)}${who ? `<span class="who">👥 ${who}</span>` : ""}</div></div>`;
-}).join("");
-const hint = (arr, open) => `<details class="hint"${open ? " open" : ""}><summary><span>💡 ヒントを見る<small>（${arr.length}こ）</small></span></summary><div class="fus">${arr.map((x) => `<div class="fu">${md(x)}</div>`).join("")}</div></details>`;
+  return `<div class="step ${who ? "pair" : ""}"><span class="k">${i + 1}</span><div>${md(x)}${who ? `<span class="who">${who}</span>` : ""}</div></div>`;
+}).join("")}</div>`;
+/* ヒント：黄色いふせん。2行だけ見せて、おすと全部読める（1まい目だけ、はじめから全部見せる） */
+const hint = (arr) => `<h2><span class="ic">💡</span>ヒント<span class="note">（おすと全部読める）</span></h2><div class="hints">${arr.map((x, i) => `<button type="button" class="hint ${i ? "" : "open"}" aria-expanded="${i ? "false" : "true"}"><span>${md(x)}</span></button>`).join("")}</div>`;
 const H2 = (ic, t) => `<h2><span class="ic">${ic}</span>${t}</h2>`;
 
 function home() {
-  board("");
-  setColor(0);
   const last = getLast();
   const L = D.lessons.find((x) => x.id === last);
-  const group = (p) => `<div class="phase p${p}"><div class="ph">● ${PHASE_NAME[p]}</div><div class="lt">${D.lessons.filter((l) => phase(l.id) === p).map((l) =>
-    `<a href="#/l/${l.id}" class="${l.id === last ? "last" : ""}"><span class="n">${esc(num(l))}</span>${esc(l["見出し"])}</a>`).join("")}</div></div>`;
-  return `${L ? `<a class="back" href="#/l/${L.id}"><span>📍 前に見ていたページ：${esc(L["番号"])} ${esc(L["見出し"])}</span><span>→</span></a>` : ""}
+  board(L ? last : "");
+  setColor(L ? phase(last) : 0);
+  const li = D.lessons.indexOf(L);
+  const group = (p) => `<div class="p${p}"><h3>${PHASE_NAME[p]}</h3><div class="ls">${D.lessons.filter((l) => phase(l.id) === p).map((l) => {
+    const i = D.lessons.indexOf(l), st = l === L ? "now" : li >= 0 && i < li ? "done" : "";
+    return `<a href="#/l/${l.id}" class="${st}"><i>${esc(num(l))}</i>${esc(l["見出し"])}</a>`;
+  }).join("")}</div></div>`;
+  return `${L ? `<a class="resume" href="#/l/${L.id}"><i>${esc(num(L))}</i><span><small>前に見ていたページ</small><b>${esc(L["見出し"])}</b></span><em>つづきを開く</em></a>` : ""}
   <h1>${esc(D.unit["題"])}</h1>
-  <div class="goal"><span class="lbl">ゴール</span>${esc(D.unit["ゴール"])}</div>
+  <div class="goal"><span class="lbl">単元のゴール</span><div class="t">${esc(D.unit["ゴール"])}</div></div>
   <p class="note">${md(D.unit["教材"])}</p>
-  ${H2("📍", "今日は何時間目？")}
-  ${[1, 2, 3].map(group).join("")}
+  <h2><span class="ic">📍</span>今日は何時間目？</h2>
+  <div class="road">${[1, 2, 3].map(group).join("")}</div>
   ${H2("🧰", "いつでも使えるページ")}
   <div class="tiles">
     <a href="#/komatta" class="help"><span class="e">🆘</span><span>困ったときのメニュー<small>聞かなくても使ってよいもの</small></span></a>
@@ -364,7 +402,7 @@ function home() {
     <a href="#/kimari"><span class="e">🚩</span><span>自由進度のきまり<small>関門・関所・メニュー</small></span></a>
     <a href="#/memo"><span class="e">🗒️</span><span>構成メモの書き方<small>⑦の終わり〜⑧ 見本つき</small></span></a>
     <a href="#/fusen"><span class="e">📝</span><span>ふせんの書き方<small>⑧ 助言の型と見本</small></span></a>
-    <a href="#/timer"><span class="e">⏱</span><span>タイマー<small>右下のボタンからも開けます</small></span></a>
+    <a href="#/timer"><span class="e">⏱</span><span>タイマー<small>左のボタンからも開けます</small></span></a>
   </div>`;
 }
 
@@ -415,7 +453,7 @@ function lesson(id) {
   board(id);
   setColor(phase(id));
   setLast(id);
-  let left = `<div class="meate"><span class="lbl">${esc(l["番号"])} きょうの めあて</span><div class="t">${esc(l["めあて"])}</div></div>
+  let left = `<div class="meate"><span class="lbl">${esc(l["番号"])} 今日のめあて</span><div class="t">${esc(l["めあて"])}</div></div>
   ${l["めあての注"] ? `<p class="meate-note">${md(l["めあての注"])}</p>` : ""}
   ${H2("✓", "やること")}${steps(l["やること"])}`;
   if (l["メニュー"]) {
@@ -435,7 +473,7 @@ function lesson(id) {
   if (id === "8") links.push(`<a href="#/fusen"><span class="e">📝</span>ふせんの書き方</a>`);
   links.push(`<a href="#/dougu"><span class="e">🧰</span>ことばの道具箱</a>`, `<a href="#/komatta" class="help"><span class="e">🆘</span>困ったときのメニュー</a>`);
   const right = `${H2("🎒", "使うもの")}<div class="mono">${l["紙"].map((p) => `<span>${esc(p)}</span>`).join("")}<span class="book">教科書</span></div>
-  ${hint(l["ヒント"], window.innerWidth >= 1000)}
+  ${hint(l["ヒント"])}
   ${H2("🔗", "こちらも見る")}<div class="tiles">${links.join("")}</div>`;
   const i = D.lessons.indexOf(l), pv = D.lessons[i - 1], nx = D.lessons[i + 1];
   const pn = `<div class="pn">${pv ? `<a href="#/l/${pv.id}"><small>← 前の時間</small>${esc(pv["番号"])} ${esc(pv["見出し"])}</a>` : "<span></span>"}${nx ? `<a class="nx" href="#/l/${nx.id}"><small>次の時間 →</small>${esc(nx["番号"])} ${esc(nx["見出し"])}</a>` : ""}</div>`;
@@ -461,7 +499,7 @@ function showK(i) {
   document.querySelectorAll("button.kb").forEach((b) => b.classList.toggle("on", b.dataset.k === String(i)));
   $("#kpanel").innerHTML = `<h3>${kicon(k["こまりごと"])} ${esc(k["こまりごと"])}</h3><ol>${k["使えるもの"].map((x) => `<li>${md(x)}</li>`).join("")}</ol>`;
   if (window.innerWidth < 900) {
-    const y = $("#kpanel").getBoundingClientRect().top + window.scrollY - $("header.top").offsetHeight - 8;
+    const y = $("#kpanel").getBoundingClientRect().top + window.scrollY - $("#board").offsetHeight - 8;
     window.scrollTo({ top: y, behavior: "smooth" });
   }
 }
@@ -541,7 +579,8 @@ function tMsg(t) { const m = $("#tMsg"); m.textContent = t; m.hidden = false; cl
 function tDraw() {
   const l = tLeft(), st = T.done ? "end" : l <= 10 && (T.run || l < T.dur) ? "end" : l <= 30 && (T.run || l < T.dur) ? "warn" : "";
   const fab = $("#tFab");
-  fab.className = `tfab ${T.done ? "end" : T.run ? (st || "run") : ""}`;
+  if (!fab) return;
+  fab.className = T.done ? "end" : T.run ? (st || "run") : "";
   $("#tFabT").textContent = T.done ? "時間です" : T.run || T.left < T.dur ? `${T.n > 1 ? T.i + "人目 " : ""}${tFmt(l)}` : "タイマー";
   if ($("#tOv").hidden) return;
   $("#tDisp").textContent = T.done ? "0:00" : tFmt(l);
@@ -578,7 +617,6 @@ function tSetDur(v) { T.dur = Math.max(30, Math.min(3600, v)); tReset(); }
 let armT = 0;
 function tOpen() { $("#tOv").hidden = false; tDraw(); }
 function tClose() { $("#tOv").hidden = true; $("#tBox").classList.remove("big"); $("#tBig").textContent = "大きく"; tDraw(); }
-$("#tFab").addEventListener("click", tOpen);
 $("#tClose").addEventListener("click", tClose);
 $("#tOv").addEventListener("click", (e) => { if (e.target.id === "tOv") tClose(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#tOv").hidden) tClose(); });
@@ -603,7 +641,6 @@ $("#tBox").addEventListener("click", (e) => {
   }
 });
 setInterval(tTick, 250);
-tTick();
 
 function route() {
   const h = location.hash.replace(/^#\/?/, "");
@@ -619,8 +656,9 @@ function route() {
   else { html = home(); page = "home"; }
   $("#main").innerHTML = html;
   bottom(page);
-  document.documentElement.style.setProperty("--hd", $("header.top").offsetHeight + "px");
+  tTick();
   document.querySelectorAll("button.kb").forEach((b) => b.addEventListener("click", () => showK(Number(b.dataset.k))));
+  document.querySelectorAll("button.hint").forEach((b) => b.addEventListener("click", () => b.setAttribute("aria-expanded", b.classList.toggle("open"))));
   // 道具箱の見出しへ飛ぶ（アドレスは変えない）
   document.querySelectorAll("[data-j]").forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault(); const t = document.getElementById(a.dataset.j); if (t) t.scrollIntoView({ behavior: "smooth" });
@@ -628,7 +666,6 @@ function route() {
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
-window.addEventListener("resize", () => document.documentElement.style.setProperty("--hd", $("header.top").offsetHeight + "px"));
 route();
 </script>
 </body>
